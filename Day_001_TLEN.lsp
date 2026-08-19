@@ -1,0 +1,21 @@
+;; Day 001/1000 - Total Length Calculator
+;; Command: TLEN
+(vl-load-com)
+(defun c:TLEN ( / ss total i ent obj len )
+  (princ "\nSelect lines, polylines, arcs, or splines: ")
+  (if (setq ss (ssget '((0 . "LINE,LWPOLYLINE,POLYLINE,ARC,SPLINE,CIRCLE"))))
+    (progn
+      (setq total 0.0)
+      (repeat (setq i (sslength ss))
+        (setq ent (ssname ss (setq i (1- i))))
+        (setq obj (vlax-ename->vla-object ent))
+        (setq len (vlax-curve-getDistAtParam obj (vlax-curve-getEndParam obj)))
+        (setq total (+ total len))
+      )
+      (alert (strcat "Total Combined Length:\n" (rtos total 2 2) " units"))
+      (princ (strcat "\n>>> Total Length: " (rtos total 2 2) " units <<<"))
+    )
+    (princ "\nNo valid linear objects selected.")
+  )
+  (princ)
+)
